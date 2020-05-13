@@ -242,9 +242,12 @@ export function renderer(view, state, actions) {
         out += frame.footer
         stack.pop()
       } else {
-        const node = resolveNode(frame.children[frame.childIndex++], state, actions)
+        let node = resolveNode(frame.children[frame.childIndex++], state, actions)
 
         if (node != null && typeof node !== 'boolean') {
+          if (node.type === 2 && node.lazy) {
+            node = node.lazy.view(node.lazy)
+          }
           if (isArray(node)) {
             stack.push({
               childIndex: 0,
